@@ -3,7 +3,7 @@ const express = require('express');
 const rateLimit = require('express-rate-limit');
 const app = express();
 const { validateID, processTranscript } = require('./utils');
-const { Innertube, UniversalCache } = require('youtubei.js');
+const { Innertube } = require('youtubei.js');
 
 (async () => {
     const limiter = rateLimit({
@@ -15,13 +15,10 @@ const { Innertube, UniversalCache } = require('youtubei.js');
 
     app.use(limiter);
 
-    const cache = new UniversalCache(true);
-
     const youtube = await Innertube.create({
         lang: "en",
         location: "US",
         retrieve_player: false,
-        cache,
     });
 
     app.get('/api/transcript/:videoId', async (req, res) => {
