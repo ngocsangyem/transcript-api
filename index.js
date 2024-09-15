@@ -4,6 +4,7 @@ const rateLimit = require('express-rate-limit');
 const app = express();
 const { validateID, processTranscript } = require('./utils');
 const { Innertube } = require('youtubei.js');
+const cors = require('cors');
 
 (async () => {
     const limiter = rateLimit({
@@ -14,6 +15,7 @@ const { Innertube } = require('youtubei.js');
     const PORT = process.env.PORT || 3000;
 
     app.use(limiter);
+    app.use(cors());
 
     const youtube = await Innertube.create({
         lang: "en",
