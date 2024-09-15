@@ -26,6 +26,9 @@
 **Endpoint**: GET `/api/transcript/:videoId`
 Fetches the transcript for a given YouTube video ID.
 
+**Query Parameters**:
+- `_fields` (optional): Comma-separated list of fields to include in the response. If not provided, all fields are returned.
+
 **Response**:
 
 - 200 OK: Returns an array of transcript segments.
@@ -40,6 +43,19 @@ Fetches the transcript for a given YouTube video ID.
     // ...
   ]
 ```
+
+```javascript
+// With specific fields
+// Ex: /api/transcript/49QoFOkrafY?_fields=text,start_ms
+ [
+    {
+      start_ms: Number,
+      text: String
+    },
+    // ...
+  ]
+```
+
 - 500 Internal Server Error: If there's an error fetching the transcript.
 
 #### 2. Validate Video ID
@@ -62,6 +78,10 @@ npm install
 ```sh
 npm start
 ```
+
+## Todo
+
+- Use Typescript
 
 ## Author
 
