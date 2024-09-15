@@ -2,7 +2,7 @@
 const express = require('express');
 const rateLimit = require('express-rate-limit');
 const app = express();
-const { validateID } = require('./utils');
+const { validateID, processTranscript } = require('./utils');
 const { Innertube, UniversalCache } = require('youtubei.js');
 
 (async () => {
@@ -27,29 +27,14 @@ const { Innertube, UniversalCache } = require('youtubei.js');
     app.get('/api/transcript/:videoId', async (req, res) => {
         try {
             const { videoId } = req.params;
+            const fields = req.query._fields ? req.query._fields.split(',') : null;
 
             const info = await youtube.getInfo(videoId);
             const transcriptData = await info.getTranscript();
 
-            const mappedTranscript = transcriptData?.transcript?.content?.body?.initial_segments
-                ?.map((segment) => ({
-                    start_ms: Number(segment.start_ms) ?? 0,
-                    end_ms: Number(segment.end_ms) ?? 0,
-                    text: segment.snippet.text.toLocaleLowerCase() ?? '',
-                }))
-                ?.filter((segment) => {
-                    const bracketedWordPattern = /\[[^\]]+\]/u;
+            const processedTranscript = processTranscript(transcriptData, fields);
 
-                    return !bracketedWordPattern.test(segment.text);
-                }) ?? [];
-
-            if (mappedTranscript?.length) {
-                res.status(200).send(mappedTranscript);
-
-                return;
-            }
-
-            res.send([]);
+            res.status(200).send(processedTranscript);
         } catch (error) {
             console.error('Error fetching transcript:', error);
             res.status(500).json({ error: 'Failed to fetch transcript' });
