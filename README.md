@@ -20,19 +20,36 @@
 
 ## Usage
 
-```sh
-/api/transcript/{your_youtube_id}
-```
+### API Endpoints
 
-Return type
+#### 1. Get Transcript
+**Endpoint**: GET `/api/transcript/:videoId`
+Fetches the transcript for a given YouTube video ID.
 
-```typescript
-type Transcript = {
-  start_ms: number;
-  end_ms: number;
-  text: string;
-}
+**Response**:
+
+- 200 OK: Returns an array of transcript segments.
+
+```javascript
+ [
+    {
+      start_ms: Number,
+      end_ms: Number,
+      text: String
+    },
+    // ...
+  ]
 ```
+- 500 Internal Server Error: If there's an error fetching the transcript.
+
+#### 2. Validate Video ID
+
+**Endpoint**: GET `/api/transcript/validate/:videoId`
+Validates if a given YouTube video ID is valid.
+**Response**:
+- 200 OK: { isValid: true } if the video ID is valid.
+- 400 Bad Request: { isValid: false } if the video ID is invalid.
+- 500 Internal Server Error: If there's an error validating the video ID.
 
 ## Install
 
@@ -40,10 +57,10 @@ type Transcript = {
 npm install
 ```
 
-## Run tests
+## Run dev
 
 ```sh
-npm run test
+npm start
 ```
 
 ## Author
